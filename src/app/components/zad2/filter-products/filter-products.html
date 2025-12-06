@@ -1,0 +1,16 @@
+<input
+  type="text"
+  placeholder="Pretraži proizvode..."
+  [(ngModel)]="searchText"
+  class="search"
+/>
+
+<div *ngIf="filteredProducts.length === 0">
+  Nema proizvoda za prikaz.
+</div>
+
+<ul *ngIf="filteredProducts.length > 0">
+  <li *ngFor="let product of filteredProducts">
+    {{ product.name }} — {{ product.category }} — {{ product.price }} €
+  </li>
+</ul>
