@@ -1,16 +1,35 @@
-<input
-  type="text"
-  placeholder="Pretraži proizvode..."
-  [(ngModel)]="searchText"
-  class="search"
-/>
+<div class="filter-container">
+  <h2>Pretraživanje proizvoda</h2>
 
-<div *ngIf="filteredProducts.length === 0">
-  Nema proizvoda za prikaz.
+  <div class="filters">
+    <input
+      type="text"
+      placeholder="Pretraži proizvode..."
+      [(ngModel)]="searchText"
+      class="search"
+    />
+
+    <select [(ngModel)]="selectedCategory" class="category-select">
+      <option value="">Sve kategorije</option>
+      <option *ngFor="let category of categories" [value]="category">
+        {{ category }}
+      </option>
+    </select>
+  </div>
+
+  <p class="results-count">Pronađeno: {{ filteredProducts.length }} proizvoda</p>
+
+  <div *ngIf="filteredProducts.length === 0" class="no-results">
+    Nema proizvoda za prikaz.
+  </div>
+
+  <ul *ngIf="filteredProducts.length > 0" class="product-list">
+    <li *ngFor="let product of filteredProducts" class="product-item">
+      <div class="product-info">
+        <span class="product-name">{{ product.name }}</span>
+        <span class="product-category">{{ product.category }}</span>
+      </div>
+      <span class="product-price">{{ product.price }} €</span>
+    </li>
+  </ul>
 </div>
-
-<ul *ngIf="filteredProducts.length > 0">
-  <li *ngFor="let product of filteredProducts">
-    {{ product.name }} — {{ product.category }} — {{ product.price }} €
-  </li>
-</ul>

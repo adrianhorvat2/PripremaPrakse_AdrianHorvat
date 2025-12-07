@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../../models/product.model';
+import { ProductService } from '../../../services/product.service';
 
 @Component({
   selector: 'app-filter-products',
@@ -10,27 +11,31 @@ import { Product } from '../../../models/product.model';
   styleUrl: './filter-products.scss',
 })
 
-export class FilterProducts {
+export class FilterProducts implements OnInit {
 
-  products: Product[] = [
-    { name: 'Prijenosno računalo', category: 'Elektronika', price: 950 },
-    { name: 'Bežične slušalice', category: 'Elektronika', price: 120 },
-    { name: 'Tipkovnica', category: 'Elektronika', price: 45 },
-    { name: 'Uredska stolica', category: 'Namještaj', price: 320 },
-    { name: 'Radni stol', category: 'Namještaj', price: 780 },
-    { name: 'Šalica za kavu', category: 'Kućanstvo', price: 8 },
-    { name: 'Tava za kuhanje', category: 'Kućanstvo', price: 35 },
-    { name: 'Sportske tenisice', category: 'Odjeća i obuća', price: 95 },
-    { name: 'Majica kratkih rukava', category: 'Odjeća i obuća', price: 18 },
-    { name: 'Ruksak', category: 'Pribor', price: 60 }
-  ];
+  private readonly productService = inject(ProductService);
 
+  products: Product[] = [];
+  categories: string[] = [];
 
   searchText: string = '';
+  selectedCategory: string = '';
+
+  ngOnInit(): void {
+    this.products = this.productService.getProducts();
+    this.categories = this.productService.getCategories();
+  }
 
   get filteredProducts(): Product[] {
-    return this.products.filter(p =>
-      p.name.toLowerCase().includes(this.searchText.toLowerCase())
-    );
+    return this.products.filter(product => {
+      const matchesSearch = product.name
+        .toLowerCase()
+        .includes(this.searchText.toLowerCase());
+      
+      const matchesCategory = !this.selectedCategory || 
+        product.category === this.selectedCategory;
+
+      return matchesSearch && matchesCategory;
+    });
   }
 }
