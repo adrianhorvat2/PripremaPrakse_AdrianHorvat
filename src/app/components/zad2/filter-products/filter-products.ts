@@ -20,6 +20,9 @@ export class FilterProducts implements OnInit {
 
   searchText: string = '';
   selectedCategory: string = '';
+  minPrice: number | null = null;
+  maxPrice: number | null = null;
+  sortOption: string = '';
 
   ngOnInit(): void {
     this.products = this.productService.getProducts();
@@ -27,15 +30,57 @@ export class FilterProducts implements OnInit {
   }
 
   get filteredProducts(): Product[] {
-    return this.products.filter(product => {
-      const matchesSearch = product.name
-        .toLowerCase()
-        .includes(this.searchText.toLowerCase());
-      
-      const matchesCategory = !this.selectedCategory || 
-        product.category === this.selectedCategory;
+    const filtered = this.filterProducts();
+    return this.sortProducts(filtered);
+  }
 
-      return matchesSearch && matchesCategory;
+  private filterProducts(): Product[] {
+    return this.products.filter(product => {
+      return this.matchesSearchCriteria(product) && 
+             this.matchesCategoryCriteria(product) && 
+             this.matchesPriceCriteria(product);
     });
   }
+  
+  private matchesSearchCriteria(product: Product): boolean {
+    return product.name
+      .toLowerCase()
+      .includes(this.searchText.toLowerCase());
+  }
+
+  private matchesCategoryCriteria(product: Product): boolean {
+    return !this.selectedCategory || product.category === this.selectedCategory;
+  }
+
+  private matchesPriceCriteria(product: Product): boolean {
+
+    const matchesMinPrice = this.minPrice === null || product.price >= this.minPrice;
+    const matchesMaxPrice = this.maxPrice === null || product.price <= this.maxPrice;
+
+    return matchesMinPrice && matchesMaxPrice;
+  }
+
+  private sortProducts(products: Product[]): Product[] {
+    if (!this.sortOption) return products;
+
+    const sorted = [...products];
+
+    switch (this.sortOption) {
+      case 'name-asc':
+        return sorted.sort((a, b) => a.name.localeCompare(b.name));
+
+      case 'name-desc':
+        return sorted.sort((a, b) => b.name.localeCompare(a.name));
+
+      case 'price-asc':
+        return sorted.sort((a, b) => a.price - b.price);
+
+      case 'price-desc':
+        return sorted.sort((a, b) => b.price - a.price);
+
+      default:
+        return products;
+    }
+  }
+  
 }

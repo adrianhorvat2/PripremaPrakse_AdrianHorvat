@@ -17,6 +17,28 @@
     </select>
   </div>
 
+  <div class="filters">
+    <input
+      type="number"
+      placeholder="Min cijena"
+      [(ngModel)] = "minPrice"
+      class="price-input"
+    />
+    <input
+      type="number"
+      placeholder="Max cijena"
+      [(ngModel)] = "maxPrice"
+      class="price-input"
+    />
+    <select [(ngModel)] = 'sortOption' class="sort-select">
+      <option value="">Sortiraj po...</option>
+      <option value="name-asc">Naziv (A-Ž)</option>
+      <option value="name-desc">Naziv (Ž-A)</option>
+      <option value="price-asc">Cijena ↑</option>
+      <option value="price-desc">Cijena ↓</option>
+    </select>
+  </div>
+
   <p class="results-count">Pronađeno: {{ filteredProducts.length }} proizvoda</p>
 
   <div *ngIf="filteredProducts.length === 0" class="no-results">
