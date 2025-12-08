@@ -1,0 +1,36 @@
+<div class="user-management-container">
+  <h2>Upravljanje korisnicima</h2>
+
+  <div *ngIf="loading" class="loading">
+    Učitavanje korisnika...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <table *ngIf="!loading && !error && users.length > 0" class="users-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ime</th>
+        <th>Korisničko ime</th>
+        <th>Email</th>
+        <th>Telefon</th>
+        <th>Grad</th>
+        <th>Tvrtka</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phone }}</td>
+        <td>{{ user.address.city }}</td>
+        <td>{{ user.company.name }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
