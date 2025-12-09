@@ -1,6 +1,62 @@
 <div class="user-management-container">
   <h2>Upravljanje korisnicima</h2>
 
+  <div class="form-container">
+    <h3>Dodaj novog korisnika</h3>
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+      <div class="form-group">
+        <label for="name">Ime *</label>
+        <input 
+          id="name"
+          type="text" 
+          formControlName="name"
+          placeholder="Unesite ime"
+          class="form-input"
+        />
+        <span *ngIf="nameControl?.touched && nameError" class="error-message">
+          {{ nameError }}
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input 
+          id="email"
+          type="email" 
+          formControlName="email"
+          placeholder="Unesite email"
+          class="form-input"
+        />
+        <span *ngIf="emailControl?.touched && emailError" class="error-message">
+          {{ emailError }}
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Telefon</label>
+        <input 
+          id="phone"
+          type="tel" 
+          formControlName="phone"
+          placeholder="Opcionalno"
+          class="form-input"
+        />
+      </div>
+
+      <button 
+        type="submit" 
+        [disabled]="userForm.invalid"
+        class="submit-btn"
+      >
+        Dodaj korisnika
+      </button>
+    </form>
+
+    <div *ngIf="submitSuccess" class="success-message">
+      Korisnik je uspješno dodan!
+    </div>
+  </div>
+
   <div *ngIf="loading" class="loading">
     Učitavanje korisnika...
   </div>
