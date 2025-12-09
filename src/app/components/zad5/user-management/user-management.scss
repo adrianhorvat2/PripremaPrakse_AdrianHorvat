@@ -23,20 +23,21 @@
   background: #f8f9fa;
   padding: 1.5rem;
   border-radius: 8px;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .user-form {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto;
   gap: 1rem;
-  align-items: flex-end;
+  align-items: start;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  min-height: 90px;
 
   label {
     font-weight: 600;
@@ -66,6 +67,7 @@
   color: #dc3545;
   font-size: 0.8rem;
   margin-top: 0.25rem;
+  min-height: 1.2rem;
 }
 
 .submit-btn {
@@ -78,6 +80,9 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
+  height: 45px;
+  align-self: flex-start;
+  margin-top: 1.6rem;
 
   &:hover:not(:disabled) {
     background: #5568d3;
@@ -101,6 +106,43 @@
   border-radius: 8px;
   margin-top: 1rem;
   font-weight: 500;
+}
+
+.filter-container {
+  
+  h3 {
+    margin: 0 0 0.75rem;
+    color: #555;
+    font-size: 1rem;
+  }
+}
+
+.search-input {
+  max-width: 400px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #667eea;
+  }
+
+  &::placeholder {
+    color: #999;
+  }
+}
+
+.no-results {
+  text-align: center;
+  padding: 2rem;
+  background: #fff3cd;
+  border-radius: 8px;
+  color: #856404;
+  font-weight: 500;
+  margin-bottom: 1rem;
 }
 
 .loading {

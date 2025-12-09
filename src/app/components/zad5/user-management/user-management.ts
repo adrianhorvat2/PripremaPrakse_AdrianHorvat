@@ -1,12 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { User } from '../../../models/user.model';
 import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-user-management',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './user-management.html',
   styleUrl: './user-management.scss',
 })
@@ -15,7 +15,8 @@ export class UserManagement implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   userForm!: FormGroup;
-  users: User[] = [];
+  allUsers: User[] = [];
+  searchText = '';
   loading = true;
   error: string | null = null;
   submitSuccess = false;
@@ -36,7 +37,7 @@ export class UserManagement implements OnInit {
   private loadUsers(): void {
     this.userService.getUsers().subscribe({
       next: (users) => {
-        this.users = users;
+        this.allUsers = users;
         this.loading = false;
       },
       error: (err) => {
@@ -45,6 +46,18 @@ export class UserManagement implements OnInit {
         console.error(err);
       }
     });
+  }
+
+  get filteredUsers(): User[] {
+    if (!this.searchText.trim()) {
+      return this.allUsers;
+    }
+    
+    const search = this.searchText.toLowerCase();
+    return this.allUsers.filter(user => 
+      user.name.toLowerCase().includes(search) ||
+      user.email.toLowerCase().includes(search)
+    );
   }
 
   onSubmit(): void {
@@ -57,7 +70,7 @@ export class UserManagement implements OnInit {
 
     const { name, email, phone } = this.userForm.value;
     const newUser = this.userService.addUser(name, email, phone || '');
-    this.users = [...this.users, newUser];
+    this.allUsers.push(newUser);
     
     this.userForm.reset();
     this.submitSuccess = true;
