@@ -3,10 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../../models/product.model';
 import { ProductService } from '../../../services/product.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-filter-products',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterLink],
   templateUrl: './filter-products.html',
   styleUrl: './filter-products.scss',
 })
