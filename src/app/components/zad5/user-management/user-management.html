@@ -68,40 +68,38 @@
     </div>
   </div>
 
-  <div *ngIf="loading" class="loading">
-    Učitavanje korisnika...
-  </div>
+  <div *ngIf="allUsers$ | async as users">
+    <div *ngIf="users.length === 0" class="no-results">
+      Nema korisnika za prikaz.
+    </div>
 
-  <div *ngIf="error" class="error">
-    {{ error }}
-  </div>
+    <div *ngIf="users.length > 0 && getFilteredUsers(users).length === 0" class="no-results">
+      Nema rezultata za pretragu "{{ searchText }}".
+    </div>
 
-  <div *ngIf="!loading && !error && filteredUsers.length === 0" class="no-results">
-    Nema korisnika za prikaz.
+    <table *ngIf="getFilteredUsers(users).length > 0" class="users-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Ime</th>
+          <th>Korisničko ime</th>
+          <th>Email</th>
+          <th>Telefon</th>
+          <th>Grad</th>
+          <th>Tvrtka</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of getFilteredUsers(users)">
+          <td>{{ user.id }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phone }}</td>
+          <td>{{ user.address.city }}</td>
+          <td>{{ user.company.name }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-
-  <table *ngIf="!loading && !error && filteredUsers.length > 0" class="users-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Ime</th>
-        <th>Korisničko ime</th>
-        <th>Email</th>
-        <th>Telefon</th>
-        <th>Grad</th>
-        <th>Tvrtka</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let user of filteredUsers">
-        <td>{{ user.id }}</td>
-        <td>{{ user.name }}</td>
-        <td>{{ user.username }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.phone }}</td>
-        <td>{{ user.address.city }}</td>
-        <td>{{ user.company.name }}</td>
-      </tr>
-    </tbody>
-  </table>
 </div>

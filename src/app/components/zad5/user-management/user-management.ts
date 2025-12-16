@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } 
 import { User } from '../../../models/user.model';
 import { UserService } from '../../../services/user.service';
 import { RouterLink } from '@angular/router';
+import { Observable, tap, catchError, of, map } from 'rxjs';
 
 @Component({
   selector: 'app-user-management',
@@ -16,7 +17,7 @@ export class UserManagement implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   userForm!: FormGroup;
-  allUsers: User[] = [];
+  allUsers$!: Observable<User[]>;
   searchText = '';
   loading = true;
   error: string | null = null;
@@ -36,26 +37,22 @@ export class UserManagement implements OnInit {
   }
 
   private loadUsers(): void {
-    this.userService.getUsers().subscribe({
-      next: (users) => {
-        this.allUsers = users;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Greška pri dohvaćanju korisnika.';
-        this.loading = false;
-        console.error(err);
-      }
-    });
+    this.allUsers$ = this.userService.getUsers().pipe(
+      tap(() => console.log('Useri učitani')),
+      catchError(err => {
+        console.error('Greška:', err);
+        return of([]); 
+      })
+    );
   }
 
-  get filteredUsers(): User[] {
+  getFilteredUsers(users: User[]): User[] {
     if (!this.searchText.trim()) {
-      return this.allUsers;
+      return users;
     }
     
     const search = this.searchText.toLowerCase();
-    return this.allUsers.filter(user => 
+    return users.filter(user => 
       user.name.toLowerCase().includes(search) ||
       user.email.toLowerCase().includes(search)
     );
@@ -71,11 +68,7 @@ export class UserManagement implements OnInit {
 
     const { name, email, phone } = this.userForm.value;
     const newUser = this.userService.addUser(name, email, phone || '');
-    this.allUsers.push(newUser);
-    
-    this.userForm.reset();
-    this.submitSuccess = true;
-    setTimeout(() => this.submitSuccess = false, 3000);
+    this.allUsers$ = this.allUsers$.pipe(map(users => [...users, newUser]));
   }
 
   get nameControl() {
